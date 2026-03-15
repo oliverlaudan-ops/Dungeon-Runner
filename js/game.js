@@ -38,26 +38,39 @@ class Game {
     
     setupEventListeners() {
         // Character selection
+        const selectClass = (card) => {
+            const selected = document.querySelector('.class-card.selected');
+            if (selected) selected.classList.remove('selected');
+            card.classList.add('selected');
+            
+            // Enable start button
+            document.getElementById('btn-start').disabled = false;
+        };
+        
         document.querySelectorAll('.class-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const selected = document.querySelector('.class-card.selected');
-                if (selected) selected.classList.remove('selected');
-                card.classList.add('selected');
-                
-                // Enable start button
-                document.getElementById('btn-start').disabled = false;
+            // Mouse click
+            card.addEventListener('click', (e) => {
+                e.preventDefault();
+                selectClass(card);
+            });
+            
+            // Touch support
+            card.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                selectClass(card);
             });
         });
         
         // Start button
-        document.getElementById('btn-start').addEventListener('click', () => {
+        document.getElementById('btn-start').addEventListener('click', (e) => {
+            e.preventDefault();
             const selected = document.querySelector('.class-card.selected');
             if (selected) {
                 this.startGame(selected.dataset.class);
             }
         });
         
-        // Also support double-click to start
+        // Also support double-click/tap to start directly
         document.querySelectorAll('.class-card').forEach(card => {
             card.addEventListener('dblclick', () => {
                 this.startGame(card.dataset.class);

@@ -366,7 +366,7 @@ body::before {
     transition: all 0.3s ease;
 }
 
-.class-card:hover {
+.class-card:hover, .class-card:active {
     border-color: var(--accent-primary);
     transform: translateY(-5px);
     box-shadow: 0 10px 30px rgba(255, 107, 53, 0.2);
