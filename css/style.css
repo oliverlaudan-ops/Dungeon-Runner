@@ -1,0 +1,490 @@
+/* ========================================
+   Dungeon Runner - Dark Fantasy Theme
+   ======================================== */
+
+:root {
+    /* Colors */
+    --bg-dark: #0a0a0f;
+    --bg-secondary: #141420;
+    --bg-tertiary: #1a1a2e;
+    --accent-primary: #ff6b35;
+    --accent-secondary: #7b2cbf;
+    --accent-success: #2ecc71;
+    --accent-danger: #e74c3c;
+    --accent-gold: #f1c40f;
+    --text-primary: #ecf0f1;
+    --text-muted: #7f8c8d;
+    --border-color: #2c2c3e;
+    
+    /* Typography */
+    --font-heading: 'Cinzel', serif;
+    --font-body: 'Lato', sans-serif;
+    --font-mono: 'Fira Code', monospace;
+    
+    /* Spacing */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-body);
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Background Pattern */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(ellipse at 20% 20%, rgba(123, 44, 191, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(255, 107, 53, 0.08) 0%, transparent 50%),
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 50px,
+            rgba(255, 255, 255, 0.01) 50px,
+            rgba(255, 255, 255, 0.01) 51px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 50px,
+            rgba(255, 255, 255, 0.01) 50px,
+            rgba(255, 255, 255, 0.01) 51px
+        );
+    pointer-events: none;
+    z-index: -1;
+}
+
+#game-container {
+    width: 100%;
+    max-width: 800px;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 
+        0 0 40px rgba(0, 0, 0, 0.5),
+        0 0 100px rgba(123, 44, 191, 0.1);
+    overflow: hidden;
+}
+
+/* ========================================
+   Header
+   ======================================== */
+
+#game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: linear-gradient(180deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+    border-bottom: 2px solid var(--border-color);
+}
+
+#game-header h1 {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    color: var(--accent-primary);
+    text-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+    letter-spacing: 2px;
+}
+
+#header-stats {
+    display: flex;
+    gap: var(--spacing-lg);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+}
+
+#header-gold {
+    color: var(--accent-gold);
+}
+
+/* ========================================
+   Main Game Area
+   ======================================== */
+
+#game-main {
+    position: relative;
+    background: var(--bg-dark);
+    border-bottom: 2px solid var(--border-color);
+}
+
+#game-canvas {
+    display: block;
+    margin: 0 auto;
+    background: #0d0d12;
+    image-rendering: pixelated;
+}
+
+#message-log {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: linear-gradient(transparent, rgba(10, 10, 15, 0.95));
+    padding: var(--spacing-sm) var(--spacing-md);
+    overflow-y: auto;
+    font-size: 0.85rem;
+    font-family: var(--font-mono);
+}
+
+.message {
+    padding: 2px 0;
+    opacity: 0.8;
+}
+
+.message.damage { color: var(--accent-danger); }
+.message.heal { color: var(--accent-success); }
+.message.gold { color: var(--accent-gold); }
+.message.info { color: var(--text-muted); }
+.message.combat { color: var(--accent-primary); }
+
+/* ========================================
+   Status Bar
+   ======================================== */
+
+#status-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: var(--bg-tertiary);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.stat-box {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.stat-label {
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    width: 30px;
+    text-transform: uppercase;
+}
+
+.stat-bar {
+    width: 100px;
+    height: 12px;
+    background: var(--bg-dark);
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.stat-bar > div {
+    height: 100%;
+    transition: width 0.3s ease;
+    border-radius: 5px;
+}
+
+#hp-bar {
+    background: linear-gradient(90deg, var(--accent-danger), #c0392b);
+    box-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
+}
+
+#mp-bar {
+    background: linear-gradient(90deg, var(--accent-secondary), #5b2c7a);
+    box-shadow: 0 0 10px rgba(123, 44, 191, 0.5);
+}
+
+#xp-bar {
+    background: linear-gradient(90deg, var(--accent-primary), #d35400);
+    box-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+}
+
+.stat-info {
+    margin-left: auto;
+    display: flex;
+    gap: var(--spacing-lg);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--accent-gold);
+}
+
+#player-level {
+    color: var(--accent-primary);
+    font-weight: bold;
+}
+
+/* ========================================
+   Action Bar
+   ======================================== */
+
+#action-bar {
+    display: flex;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background: var(--bg-secondary);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    flex: 1;
+    min-width: 100px;
+    max-width: 140px;
+    padding: var(--spacing-md) var(--spacing-sm);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.action-btn:hover {
+    background: var(--bg-dark);
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 15px rgba(255, 107, 53, 0.3);
+    transform: translateY(-2px);
+}
+
+.action-btn:active {
+    transform: translateY(0);
+}
+
+.action-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+}
+
+#btn-attack:hover { border-color: var(--accent-danger); }
+#btn-defend:hover { border-color: #3498db; }
+#btn-skill:hover { border-color: var(--accent-secondary); }
+#btn-item:hover { border-color: var(--accent-success); }
+#btn-descend:hover { border-color: var(--accent-gold); }
+
+/* ========================================
+   Modals
+   ======================================== */
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 10, 15, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 16px;
+    padding: var(--spacing-xl);
+    max-width: 700px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 0 60px rgba(123, 44, 191, 0.2);
+    animation: modalAppear 0.3s ease;
+}
+
+@keyframes modalAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.modal-content h2 {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    color: var(--accent-primary);
+    margin-bottom: var(--spacing-sm);
+    text-shadow: 0 0 30px rgba(255, 107, 53, 0.4);
+}
+
+.modal-content .subtitle {
+    color: var(--text-muted);
+    margin-bottom: var(--spacing-xl);
+    font-size: 1.1rem;
+}
+
+/* Character Selection */
+.class-cards {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.class-card {
+    flex: 1;
+    min-width: 180px;
+    max-width: 220px;
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: var(--spacing-lg);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.class-card:hover {
+    border-color: var(--accent-primary);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(255, 107, 53, 0.2);
+}
+
+.class-card.selected {
+    border-color: var(--accent-gold);
+    background: rgba(241, 196, 15, 0.1);
+    box-shadow: 0 0 30px rgba(241, 196, 15, 0.3);
+}
+
+.class-icon {
+    font-size: 3rem;
+    margin-bottom: var(--spacing-sm);
+}
+
+.class-card h3 {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.class-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: var(--spacing-md);
+    line-height: 1.4;
+}
+
+.class-stats {
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.class-stats div {
+    margin: 4px 0;
+}
+
+/* Game Over */
+.run-stats {
+    background: var(--bg-tertiary);
+    border-radius: 8px;
+    padding: var(--spacing-lg);
+    margin: var(--spacing-lg) 0;
+}
+
+.run-stats p {
+    font-size: 1.1rem;
+    margin: var(--spacing-sm) 0;
+    font-family: var(--font-mono);
+}
+
+.run-stats span {
+    color: var(--accent-gold);
+    font-weight: bold;
+}
+
+.restart-btn {
+    margin-top: var(--spacing-lg);
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: 1.1rem;
+}
+
+/* ========================================
+   Responsive
+   ======================================== */
+
+@media (max-width: 600px) {
+    #game-container {
+        border-radius: 0;
+        height: 100vh;
+        max-width: 100%;
+    }
+    
+    #game-canvas {
+        width: 100%;
+        height: auto;
+    }
+    
+    #action-bar {
+        padding: var(--spacing-sm);
+    }
+    
+    .action-btn {
+        min-width: 60px;
+        font-size: 0.75rem;
+        padding: var(--spacing-sm);
+    }
+    
+    .stat-bar {
+        width: 60px;
+    }
+    
+    .class-cards {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .class-card {
+        max-width: 100%;
+    }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-primary);
+}

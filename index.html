@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dungeon Runner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@400;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Header -->
+        <header id="game-header">
+            <h1>⚔️ Dungeon Runner</h1>
+            <div id="header-stats">
+                <span id="header-floor">Floor: 1</span>
+                <span id="header-gold">💰 Gold: 0</span>
+            </div>
+        </header>
+
+        <!-- Main Game Area -->
+        <main id="game-main">
+            <canvas id="game-canvas" width="640" height="480"></canvas>
+            <div id="message-log"></div>
+        </main>
+
+        <!-- Status Bar -->
+        <div id="status-bar">
+            <div class="stat-box">
+                <span class="stat-label">HP</span>
+                <div class="stat-bar"><div id="hp-bar"></div></div>
+                <span id="hp-text">100/100</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">MP</span>
+                <div class="stat-bar mp"><div id="mp-bar"></div></div>
+                <span id="mp-text">50/50</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">XP</span>
+                <div class="stat-bar xp"><div id="xp-bar"></div></div>
+                <span id="xp-text">0/100</span>
+            </div>
+            <div class="stat-info">
+                <span>Level <span id="player-level">1</span></span>
+                <span>🪙 <span id="player-gold">0</span></span>
+            </div>
+        </div>
+
+        <!-- Action Bar -->
+        <div id="action-bar">
+            <button class="action-btn" id="btn-attack" data-action="attack">
+                🗡️ Attack
+            </button>
+            <button class="action-btn" id="btn-defend" data-action="defend">
+                🛡️ Defend
+            </button>
+            <button class="action-btn" id="btn-skill" data-action="skill">
+                ✨ Skill
+            </button>
+            <button class="action-btn" id="btn-item" data-action="item">
+                🎒 Item
+            </button>
+            <button class="action-btn" id="btn-descend" data-action="descend">
+                🪜 Descend
+            </button>
+        </div>
+    </div>
+
+    <!-- Character Selection Modal -->
+    <div id="char-select-modal" class="modal">
+        <div class="modal-content">
+            <h2>Choose Your Hero</h2>
+            <p class="subtitle">Select a class to begin your adventure</p>
+            
+            <div class="class-cards">
+                <div class="class-card" data-class="warrior">
+                    <div class="class-icon">⚔️</div>
+                    <h3>Warrior</h3>
+                    <p class="class-desc">A battle-hardened fighter with high HP and strong melee damage.</p>
+                    <div class="class-stats">
+                        <div>HP: ████████░░ 180</div>
+                        <div>MP: ████░░░░░░ 30</div>
+                        <div>ATK: ██████░░░░ 25</div>
+                        <div>DEF: ██████░░░░ 20</div>
+                    </div>
+                </div>
+                
+                <div class="class-card" data-class="mage">
+                    <div class="class-icon">🔮</div>
+                    <h3>Mage</h3>
+                    <p class="class-desc">A master of arcane arts with devastating magic but fragile.</p>
+                    <div class="class-stats">
+                        <div>HP: ████░░░░░░ 80</div>
+                        <div>MP: █████████ 150</div>
+                        <div>ATK: ████████░░ 35</div>
+                        <div>DEF: ██░░░░░░░░ 5</div>
+                    </div>
+                </div>
+                
+                <div class="class-card" data-class="rogue">
+                    <div class="class-icon">🗡️</div>
+                    <h3>Rogue</h3>
+                    <p class="class-desc">A swift assassin with high evasion and deadly critical strikes.</p>
+                    <div class="class-stats">
+                        <div>HP: █████░░░░░ 120</div>
+                        <div>MP: ██████░░░░ 60</div>
+                        <div>ATK: ████████░░ 30</div>
+                        <div>DEF: ███░░░░░░░ 10</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Over Modal -->
+    <div id="game-over-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>💀 You Have Died</h2>
+            <p class="subtitle">The dungeon claims another soul...</p>
+            
+            <div class="run-stats">
+                <p>Floor Reached: <span id="final-floor">1</span></p>
+                <p>Enemies Slain: <span id="final-kills">0</span></p>
+                <p>Gold Collected: <span id="final-gold">0</span></p>
+                <p>Damage Dealt: <span id="final-damage">0</span></p>
+            </div>
+            
+            <button class="action-btn restart-btn" id="btn-restart">
+                🔄 Try Again
+            </button>
+        </div>
+    </div>
+
+    <script type="module" src="js/game.js"></script>
+</body>
+</html>
