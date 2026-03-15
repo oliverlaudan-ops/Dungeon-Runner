@@ -43,9 +43,21 @@ class Game {
                 const selected = document.querySelector('.class-card.selected');
                 if (selected) selected.classList.remove('selected');
                 card.classList.add('selected');
+                
+                // Enable start button
+                document.getElementById('btn-start').disabled = false;
             });
         });
         
+        // Start button
+        document.getElementById('btn-start').addEventListener('click', () => {
+            const selected = document.querySelector('.class-card.selected');
+            if (selected) {
+                this.startGame(selected.dataset.class);
+            }
+        });
+        
+        // Also support double-click to start
         document.querySelectorAll('.class-card').forEach(card => {
             card.addEventListener('dblclick', () => {
                 this.startGame(card.dataset.class);
