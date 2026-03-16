@@ -477,4 +477,7 @@ class Game {
 // Start the game
 const game = new Game();
 
+// Make globally accessible for HTML onclick handlers
+window.gameInstance = game;
+
 export { game };

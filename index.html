@@ -156,11 +156,8 @@
         // Global function for starting the game
         function startGame() {
             var selected = document.querySelector('.class-card.selected');
-            if (selected) {
-                // Dispatch custom event for game.js to handle
-                window.dispatchEvent(new CustomEvent('startGame', { 
-                    detail: { class: selected.dataset.class } 
-                }));
+            if (selected && window.gameInstance) {
+                window.gameInstance.startGame(selected.dataset.class);
             }
         }
     </script>
