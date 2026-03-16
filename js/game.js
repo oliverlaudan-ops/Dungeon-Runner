@@ -204,13 +204,15 @@ class Game {
         // Check bounds
         if (newX < 0 || newX >= this.cols || newY < 0 || newY >= this.rows) return;
         
-        // Check walls
+        // FIRST: Check if there's an enemy - can't walk through, must attack!
+        const enemy = this.enemies.find(e => e.x === newX && e.y === newY);
+        if (enemy) {
+            this.attackEnemy(enemy);
+            return;
+        }
+        
+        // Check walls (only if no enemy)
         if (!this.dungeon.isWalkable(newX, newY)) {
-            // Check if it's an enemy (can't walk through)
-            const enemy = this.enemies.find(e => e.x === newX && e.y === newY);
-            if (enemy) {
-                this.attackEnemy(enemy);
-            }
             return;
         }
         
@@ -360,6 +362,26 @@ class Game {
         if (this.gameState !== 'playing') return;
         
         switch(action) {
+            case 'attack':
+                // Attack all adjacent enemies
+                const adjacentPositions = [
+                    {x: 0, y: -1}, {x: 0, y: 1}, {x: -1, y: 0}, {x: 1, y: 0}
+                ];
+                let attacked = false;
+                for (const pos of adjacentPositions) {
+                    const enemy = this.enemies.find(e => 
+                        e.x === this.player.x + pos.x && e.y === this.player.y + pos.y
+                    );
+                    if (enemy) {
+                        this.attackEnemy(enemy);
+                        attacked = true;
+                        break;  // Only attack one at a time
+                    }
+                }
+                if (!attacked) {
+                    this.ui.showMessage('No enemy in range!', 'info');
+                }
+                break;
             case 'defend':
                 this.player.isDefending = true;
                 this.ui.showMessage('You take a defensive stance.', 'info');

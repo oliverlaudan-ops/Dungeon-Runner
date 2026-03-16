@@ -33,9 +33,9 @@ export class Dungeon {
             Array(this.width).fill(this.TILES.VOID)
         );
         
-        // Generate rooms
+        // Generate rooms - more rooms = better connectivity
         this.rooms = [];
-        const numRooms = 5 + Math.floor(Math.random() * 4); // 5-8 rooms
+        const numRooms = 6 + Math.floor(Math.random() * 3); // 6-8 rooms
         
         for (let i = 0; i < numRooms * 10 && this.rooms.length < numRooms; i++) {
             const room = this.generateRoom();
@@ -125,21 +125,27 @@ export class Dungeon {
     }
     
     connectRooms(room1, room2) {
-        // L-shaped corridor
-        let x = room1.centerX;
-        let y = room1.centerY;
+        // L-shaped corridor - ensure both horizontal AND vertical corridors exist
+        const x1 = room1.centerX;
+        const y1 = room1.centerY;
+        const x2 = room2.centerX;
+        const y2 = room2.centerY;
         
-        // Horizontal first
-        while (x !== room2.centerX) {
-            this.setFloor(x, y);
-            x += x < room2.centerX ? 1 : -1;
+        // Horizontal corridor
+        let x = x1;
+        while (x !== x2) {
+            this.setFloor(x, y1);
+            x += x < x2 ? 1 : -1;
         }
+        this.setFloor(x2, y1);  // Ensure corner is floor
         
-        // Then vertical
-        while (y !== room2.centerY) {
-            this.setFloor(x, y);
-            y += y < room2.centerY ? 1 : -1;
+        // Vertical corridor (from corner to destination)
+        let y = y1;
+        while (y !== y2) {
+            this.setFloor(x2, y);
+            y += y < y2 ? 1 : -1;
         }
+        this.setFloor(x2, y2);  // Ensure destination is floor
     }
     
     setFloor(x, y) {
