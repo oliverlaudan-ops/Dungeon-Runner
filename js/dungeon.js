@@ -30,7 +30,7 @@ export class Dungeon {
         this.height = 15;
         
         this.map = Array(this.height).fill(null).map(() => 
-            Array(this.width).fill(this.TILES.FLOOR)  // Start with all floor!
+            Array(this.width).fill(this.TILES.WALL)  // Start with walls!
         );
         
         // Add walls around edges
