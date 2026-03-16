@@ -30,62 +30,83 @@ export class Dungeon {
         this.height = 15;
         
         this.map = Array(this.height).fill(null).map(() => 
-            Array(this.width).fill(this.TILES.VOID)
+            Array(this.width).fill(this.TILES.FLOOR)  // Start with all floor!
         );
         
-        // Generate rooms - more rooms = better connectivity
-        this.rooms = [];
-        const numRooms = 6 + Math.floor(Math.random() * 3); // 6-8 rooms
+        // Add walls around edges
+        for (let x = 0; x < this.width; x++) {
+            this.map[0][x] = this.TILES.WALL;
+            this.map[this.height-1][x] = this.TILES.WALL;
+        }
+        for (let y = 0; y < this.height; y++) {
+            this.map[y][0] = this.TILES.WALL;
+            this.map[y][this.width-1] = this.TILES.WALL;
+        }
         
-        for (let i = 0; i < numRooms * 10 && this.rooms.length < numRooms; i++) {
-            const room = this.generateRoom();
-            
-            // Check for overlap
-            let overlaps = false;
-            for (const other of this.rooms) {
-                if (this.roomsOverlap(room, other)) {
-                    overlaps = true;
-                    break;
-                }
-            }
-            
-            if (!overlaps) {
+        // Generate rooms - simple grid pattern for guaranteed connectivity
+        this.rooms = [];
+        const cols = 4;
+        const rows = 3;
+        const roomW = Math.floor(this.width / cols) - 1;
+        const roomH = Math.floor(this.height / rows) - 1;
+        
+        for (let row = 0; row < rows; row++) {
+            for (let col = 0; col < cols; col++) {
+                // Skip some rooms randomly for variety
+                if (Math.random() < 0.2) continue;
+                
+                const width = 3 + Math.floor(Math.random() * 2);
+                const height = 2 + Math.floor(Math.random() * 2);
+                const x = 1 + col * roomW + Math.floor(Math.random() * (roomW - width - 1));
+                const y = 1 + row * roomH + Math.floor(Math.random() * (roomH - height - 1));
+                
+                const room = { x, y, width, height };
                 this.addRoom(room);
+                
+                // Connect to previous room in row
+                if (col > 0 && this.rooms.length > 1) {
+                    this.connectRooms(this.rooms[this.rooms.length-2], room);
+                }
+                // Connect to room above
+                if (row > 0 && col === 0) {
+                    // Find room above in same column
+                    const roomAbove = this.rooms.find(r => 
+                        r.y < y && r.x + r.width > x && r.x < x + width
+                    );
+                    if (roomAbove) {
+                        this.connectRooms(roomAbove, room);
+                    }
+                }
             }
         }
         
-        // Connect rooms with corridors
-        for (let i = 1; i < this.rooms.length; i++) {
-            this.connectRooms(this.rooms[i-1], this.rooms[i]);
+        // Make sure we have at least 2 rooms
+        if (this.rooms.length < 2) {
+            const room1 = { x: 2, y: 2, width: 5, height: 4 };
+            const room2 = { x: 12, y: 8, width: 5, height: 4 };
+            this.rooms = [room1, room2];
+            this.addRoom(room1);
+            this.addRoom(room2);
+            this.connectRooms(room1, room2);
         }
         
         // Add stairs in last room
         const lastRoom = this.rooms[this.rooms.length - 1];
         if (lastRoom) {
+            lastRoom.centerX = Math.floor(lastRoom.x + lastRoom.width / 2);
+            lastRoom.centerY = Math.floor(lastRoom.y + lastRoom.height / 2);
             this.map[lastRoom.centerY][lastRoom.centerX] = this.TILES.STAIRS_DOWN;
         }
         
-        // Add stairs up in first room for later
+        // Add stairs up in first room
         const firstRoom = this.rooms[0];
-        if (firstRoom && this.floor > 1) {
-            this.map[firstRoom.centerY][firstRoom.centerX - 1] = this.TILES.STAIRS_UP;
+        if (firstRoom) {
+            firstRoom.centerX = Math.floor(firstRoom.x + firstRoom.width / 2);
+            firstRoom.centerY = Math.floor(firstRoom.y + firstRoom.height / 2);
+            if (this.floor > 1) {
+                this.map[firstRoom.centerY][firstRoom.centerX] = this.TILES.STAIRS_UP;
+            }
         }
-        
-        // Add some doors
-        this.addDoors();
-    }
-    
-    generateRoom() {
-        const minSize = 4;
-        const maxSize = 8;
-        
-        const width = minSize + Math.floor(Math.random() * (maxSize - minSize));
-        const height = minSize + Math.floor(Math.random() * (maxSize - minSize));
-        
-        const x = 1 + Math.floor(Math.random() * (this.width - width - 2));
-        const y = 1 + Math.floor(Math.random() * (this.height - height - 2));
-        
-        return { x, y, width, height };
     }
     
     roomsOverlap(r1, r2) {
