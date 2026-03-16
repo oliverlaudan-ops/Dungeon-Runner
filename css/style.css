@@ -364,6 +364,8 @@ body::before {
     padding: var(--spacing-lg);
     cursor: pointer;
     transition: all 0.3s ease;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .class-card:hover, .class-card:active {

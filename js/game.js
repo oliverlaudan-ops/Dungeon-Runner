@@ -44,31 +44,29 @@ class Game {
             card.classList.add('selected');
             
             // Enable start button
-            document.getElementById('btn-start').disabled = false;
+            const btn = document.getElementById('btn-start');
+            if (btn) btn.disabled = false;
         };
         
+        // Use pointerdown which works on all devices (mouse + touch)
         document.querySelectorAll('.class-card').forEach(card => {
-            // Mouse click
-            card.addEventListener('click', (e) => {
-                e.preventDefault();
-                selectClass(card);
-            });
-            
-            // Touch support
-            card.addEventListener('touchend', (e) => {
+            card.addEventListener('pointerdown', (e) => {
                 e.preventDefault();
                 selectClass(card);
             });
         });
         
         // Start button
-        document.getElementById('btn-start').addEventListener('click', (e) => {
-            e.preventDefault();
-            const selected = document.querySelector('.class-card.selected');
-            if (selected) {
-                this.startGame(selected.dataset.class);
-            }
-        });
+        const startBtn = document.getElementById('btn-start');
+        if (startBtn) {
+            startBtn.addEventListener('pointerdown', (e) => {
+                e.preventDefault();
+                const selected = document.querySelector('.class-card.selected');
+                if (selected) {
+                    this.startGame(selected.dataset.class);
+                }
+            });
+        }
         
         // Also support double-click/tap to start directly
         document.querySelectorAll('.class-card').forEach(card => {
