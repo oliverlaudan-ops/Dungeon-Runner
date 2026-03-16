@@ -25,8 +25,8 @@ export class Dungeon {
     }
     
     generate() {
-        // Initialize map
-        this.width = 40;
+        // Initialize map - fit to canvas (20 cols x 15 rows for 640x480 at 32px tile)
+        this.width = 20;
         this.height = 15;
         
         this.map = Array(this.height).fill(null).map(() => 
