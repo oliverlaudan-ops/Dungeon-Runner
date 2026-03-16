@@ -76,7 +76,7 @@
             <p class="subtitle">Select a class to begin your adventure</p>
             
             <div class="class-cards">
-                <div class="class-card" data-class="warrior">
+                <div class="class-card" data-class="warrior" onclick="selectClass(this)">
                     <div class="class-icon">⚔️</div>
                     <h3>Warrior</h3>
                     <p class="class-desc">A battle-hardened fighter with high HP and strong melee damage.</p>
@@ -88,7 +88,7 @@
                     </div>
                 </div>
                 
-                <div class="class-card" data-class="mage">
+                <div class="class-card" data-class="mage" onclick="selectClass(this)">
                     <div class="class-icon">🔮</div>
                     <h3>Mage</h3>
                     <p class="class-desc">A master of arcane arts with devastating magic but fragile.</p>
@@ -100,7 +100,7 @@
                     </div>
                 </div>
                 
-                <div class="class-card" data-class="rogue">
+                <div class="class-card" data-class="rogue" onclick="selectClass(this)">
                     <div class="class-icon">🗡️</div>
                     <h3>Rogue</h3>
                     <p class="class-desc">A swift assassin with high evasion and deadly critical strikes.</p>
@@ -113,7 +113,7 @@
                 </div>
             </div>
             
-            <button class="action-btn start-btn" id="btn-start" disabled>
+            <button class="action-btn start-btn" id="btn-start" disabled onclick="startGame()">
                 🚀 Begin Adventure
             </button>
         </div>
@@ -138,6 +138,32 @@
         </div>
     </div>
 
+    <script>
+        // Global function for class selection (works on mobile)
+        function selectClass(card) {
+            // Remove previous selection
+            var selected = document.querySelector('.class-card.selected');
+            if (selected) selected.classList.remove('selected');
+            
+            // Add selection to clicked card
+            card.classList.add('selected');
+            
+            // Enable start button
+            var btn = document.getElementById('btn-start');
+            if (btn) btn.disabled = false;
+        }
+        
+        // Global function for starting the game
+        function startGame() {
+            var selected = document.querySelector('.class-card.selected');
+            if (selected) {
+                // Dispatch custom event for game.js to handle
+                window.dispatchEvent(new CustomEvent('startGame', { 
+                    detail: { class: selected.dataset.class } 
+                }));
+            }
+        }
+    </script>
     <script type="module" src="js/game.js"></script>
 </body>
 </html>

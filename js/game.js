@@ -37,36 +37,10 @@ class Game {
     }
     
     setupEventListeners() {
-        // Character selection
-        const selectClass = (card) => {
-            const selected = document.querySelector('.class-card.selected');
-            if (selected) selected.classList.remove('selected');
-            card.classList.add('selected');
-            
-            // Enable start button
-            const btn = document.getElementById('btn-start');
-            if (btn) btn.disabled = false;
-        };
-        
-        // Use pointerdown which works on all devices (mouse + touch)
-        document.querySelectorAll('.class-card').forEach(card => {
-            card.addEventListener('pointerdown', (e) => {
-                e.preventDefault();
-                selectClass(card);
-            });
+        // Listen for global start game event from HTML onclick
+        window.addEventListener('startGame', (e) => {
+            this.startGame(e.detail.class);
         });
-        
-        // Start button
-        const startBtn = document.getElementById('btn-start');
-        if (startBtn) {
-            startBtn.addEventListener('pointerdown', (e) => {
-                e.preventDefault();
-                const selected = document.querySelector('.class-card.selected');
-                if (selected) {
-                    this.startGame(selected.dataset.class);
-                }
-            });
-        }
         
         // Also support double-click/tap to start directly
         document.querySelectorAll('.class-card').forEach(card => {
