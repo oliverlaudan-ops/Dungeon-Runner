@@ -182,7 +182,7 @@ export class Dungeon {
         if (floor >= 3) types.push('goblin', 'spider');
         if (floor >= 5) types.push('orc', 'bat');
         if (floor >= 7) types.push('troll', 'wolf');
-        if (floor >= 9) types.push('demon', 'dragon'];
+        if (floor >= 9) types.push('demon', 'dragon');
         
         return types;
     }
