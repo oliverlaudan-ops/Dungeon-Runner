@@ -80,7 +80,7 @@ export class Dungeon {
         const maxSize = 8;
         
         const width = minSize + Math.floor(Math.random() * (maxSize - minSize));
-        const height = minSize + Math.floor(Math.random() * (maxSize - height));
+        const height = minSize + Math.floor(Math.random() * (maxSize - minSize));
         
         const x = 1 + Math.floor(Math.random() * (this.width - width - 2));
         const y = 1 + Math.floor(Math.random() * (this.height - height - 2));
