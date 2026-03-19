@@ -64,6 +64,22 @@ class Game {
         
         // Canvas click for movement/attack
         this.canvas.addEventListener('click', (e) => this.handleCanvasClick(e));
+        
+        // Mobile D-Pad controls
+        document.querySelectorAll('.dpad-btn').forEach(btn => {
+            btn.addEventListener('pointerdown', (e) => {
+                e.preventDefault();
+                const dir = btn.dataset.dir;
+                let dx = 0, dy = 0;
+                if (dir === 'up') dy = -1;
+                if (dir === 'down') dy = 1;
+                if (dir === 'left') dx = -1;
+                if (dir === 'right') dx = 1;
+                if (dx !== 0 || dy !== 0) {
+                    this.playerMove(dx, dy);
+                }
+            });
+        });
     }
     
     startGame(charClass) {

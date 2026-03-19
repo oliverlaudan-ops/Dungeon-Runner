@@ -516,3 +516,55 @@ body::before {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--accent-primary);
 }
+
+/* ========================================
+   Mobile D-Pad
+   ======================================== */
+
+#mobile-dpad {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 150px;
+    height: 150px;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 5px;
+    z-index: 100;
+}
+
+.dpad-btn {
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.1s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.dpad-btn:active {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    transform: scale(0.95);
+}
+
+.dpad-btn[data-dir="up"] { grid-column: 2; grid-row: 1; }
+.dpad-btn[data-dir="left"] { grid-column: 1; grid-row: 2; }
+.dpad-btn[data-dir="down"] { grid-column: 2; grid-row: 3; }
+.dpad-btn[data-dir="right"] { grid-column: 3; grid-row: 2; }
+
+@media (max-width: 768px), (pointer: coarse) {
+    #mobile-dpad {
+        display: grid;
+    }
+    
+    #action-bar {
+        padding-bottom: 180px;
+    }
+}
