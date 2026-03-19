@@ -76,7 +76,7 @@ class Game {
                 if (dir === 'left') dx = -1;
                 if (dir === 'right') dx = 1;
                 if (dx !== 0 || dy !== 0) {
-                    this.playerMove(dx, dy);
+                    this.movePlayer(dx, dy);
                 }
             });
         });
